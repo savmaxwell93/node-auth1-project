@@ -8,10 +8,14 @@ const User = require('../users/users-model');
   }
 */
 function restricted(req, res, next) {
-  next({
-    status: 401,
-    message: 'You shall not pass!'
-  })
+  if (req.session.user) {
+    next()
+  } else {
+    next({
+      status: 401,
+      message: 'You shall not pass!'
+    })
+  }
 }
 
 /*
