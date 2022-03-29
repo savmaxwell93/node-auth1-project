@@ -1,3 +1,4 @@
+const User = require('../users/users-model');
 /*
   If the user does not have a session saved in the server
 
@@ -9,7 +10,7 @@
 function restricted(req, res, next) {
   next({
     status: 401,
-    message: 'you are not authorized to access this API'
+    message: 'You shall not pass!'
   })
 }
 
@@ -21,8 +22,17 @@ function restricted(req, res, next) {
     "message": "Username taken"
   }
 */
-function checkUsernameFree() {
-
+async function checkUsernameFree(req, res, next) {
+  let [user] = await User.findBy({ username: req.user.username})
+  if (user !== null) {
+    next({
+      status: 422,
+      message: 'Username taken'
+    })
+  } else {
+    req.user.hash = user.password
+    next()
+  }
 }
 
 /*
@@ -33,7 +43,7 @@ function checkUsernameFree() {
     "message": "Invalid credentials"
   }
 */
-function checkUsernameExists() {
+async function checkUsernameExists(req, res, next) {
 
 }
 
@@ -45,7 +55,7 @@ function checkUsernameExists() {
     "message": "Password must be longer than 3 chars"
   }
 */
-function checkPasswordLength() {
+async function checkPasswordLength(req, res, next) {
 
 }
 
